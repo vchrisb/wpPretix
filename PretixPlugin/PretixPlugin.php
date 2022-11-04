@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Pretix Shortcode
-Description: Plugin to add a shortcode for a Pretix Button
-Version: 0.0.2
+Description: Plugin to add a shortcode for Pretix
+Version: 0.1.0
 Author: Christopher Banck
 Author URI: https://banck.net
 */
@@ -59,15 +59,9 @@ function pretix_button($atts = [], $content = null, $tag = '')
 
 
     if (isset($atts['subevent'])) {
-        $button_options .= ' subevent="' . $atts['event'] . '"';
+        $button_options .= ' subevent="' . $atts['subevent'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $button_options .= ' subevent="' . get_post_meta($POST_ID, 'pretix_subevent', true) . '"';
-    }
-
-    if (isset($atts['voucher'])) {
-        $button_options .= ' voucher="' . $atts['voucher'] . '"';
-    } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
-        $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
     }
 
     if (isset($atts['voucher'])) {
