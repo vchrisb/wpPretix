@@ -74,6 +74,7 @@ There are many custom classes prefixed with `pretix-widget` that can be customiz
 Optionally the following attributes can be configured:
 
 * `event`: The event, if empty string all events will be shown.
+* `subevent`: A subevent to be pre-selected
 * `voucher`: A voucher code to be pre-selected
 * `vouchers`: if set to `disable` the voucher input is disabled
 * `iframe`: if set to `disable` the shop will alway be opened in new window
@@ -95,6 +96,7 @@ In this case it is enough to only add the shortcode without attributes
 The following custom fields can be set:
 
 * `pretix_event`: The event, if empty string all events will be shown.
+* `pretix_subevent`: A subevent to be pre-selected
 * `pretix_voucher`: A voucher code to be pre-selected
 * `pretix_vouchers`: if set to `disable` the voucher input is disabled
 * `pretix_iframe`: if set to `disable` the shop will alway be opened in new window

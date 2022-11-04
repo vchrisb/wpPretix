@@ -110,9 +110,16 @@ function pretix_widget($atts = [], $content = null, $tag = '')
     } else {
         return '';
     }
-    $eventurl = $options['organization'] . '/' . $event;
-    $widget_options = 'event="' . $eventurl . '"';
 
+    $eventurl = $options['organization'] . '/' . $event;
+
+    if (isset($atts['subevent'])) {
+        $eventurl .= '/' . $atts['subevent'];
+    } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
+        $eventurl .= '/' . get_post_meta($POST_ID, 'pretix_subevent', true);
+    }
+
+    $widget_options = 'event="' . $eventurl . '"';
 
     if (isset($atts['voucher'])) {
         $widget_options .= ' voucher="' . $atts['voucher'] . '"';
