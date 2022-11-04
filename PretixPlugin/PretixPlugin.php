@@ -45,13 +45,47 @@ function pretix_button($atts = [], $content = null, $tag = '')
 {
     global $Pretix_options_defaults;
     $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
+    $POST_ID = get_the_ID();
 
     if (isset($atts['event'])) {
         $event = $atts['event'];
-    } elseif (get_post_meta(get_the_ID(), 'pretix_event', true)) {
-        $event = get_post_meta(get_the_ID(), 'pretix_event', true);
+    } elseif (get_post_meta($POST_ID, 'pretix_event', true)) {
+        $event = get_post_meta($POST_ID, 'pretix_event', true);
     } else {
         return '';
+    }
+    $eventurl = $options['organization'] . '/' . $event;
+    $button_options = 'event="' . $eventurl . '"';
+
+
+    if ($atts['subevent']) {
+        $button_options .= ' subevent="' . $atts['event'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
+        $button_options .= ' subevent="' . get_post_meta($POST_ID, 'pretix_subevent', true) . '"';
+    }
+
+    if ($atts['voucher']) {
+        $button_options .= ' voucher="' . $atts['voucher'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
+        $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
+    }
+
+    if ($atts['voucher']) {
+        $button_options .= ' voucher="' . $atts['voucher'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
+        $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
+    }
+
+    if ($atts['items']) {
+        $button_options .= ' items="' . $atts['items'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_items', true)) {
+        $button_options .= ' items="' . get_post_meta($POST_ID, 'pretix_items', true) . '"';
+    }
+
+    if ($atts['iframe'] && $atts['iframe'] === 'disable') {
+        $button_options .= ' disable-iframe';
+    } elseif (get_post_meta($POST_ID, 'pretix_items', true) === 'disable') {
+        $button_options .= ' disable-iframe';
     }
 
     if (isset($atts['text'])) {
@@ -59,9 +93,6 @@ function pretix_button($atts = [], $content = null, $tag = '')
     } else {
         $text = "Tickets";
     }
-    $eventurl = $options['organization'] . '/' . $event;
-    $button_options = 'event="' . $eventurl . '"';
-
     return '<pretix-button ' . $button_options . '>' . $text . '</pretix-button>';
 }
 
