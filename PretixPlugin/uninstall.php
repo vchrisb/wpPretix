@@ -1,1 +1,1 @@
-<?php delete_option( 'LocalFonts_options' ); ?>
+<?php delete_option('LocalFonts_options');
