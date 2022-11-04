@@ -2,7 +2,7 @@
 /*
 Plugin Name: Pretix Shortcode
 Description: Plugin to add a shortcode for Pretix
-Version: 0.2.0
+Version: 0.2.1
 Author: Christopher Banck
 Author URI: https://banck.net
 */
