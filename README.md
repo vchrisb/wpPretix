@@ -57,7 +57,7 @@ The following custom fields can be set:
 * `pretix_iframe`: if set to `disable` the shop will alway be opened in new window
 * `pretix_text`: Button Text
 
-At least `pretix_event` needs to be set in the post/event
+At least `pretix_event` needs to be set in the post/event. Shortcode attributes do have precedence.
 
 ## Widget
 
@@ -106,4 +106,4 @@ The following custom fields can be set:
 * `pretix_variations`: Filter by one or more variations
 * `pretix_filter`: Filter by meta data attributes
 
-At least `pretix_event` needs to be set in the post/event
+At least `pretix_event` needs to be set in the post/event. Shortcode attributes do have precedence.
