@@ -58,33 +58,33 @@ function pretix_button($atts = [], $content = null, $tag = '')
     $button_options = 'event="' . $eventurl . '"';
 
 
-    if ($atts['subevent']) {
+    if (isset($atts['subevent'])) {
         $button_options .= ' subevent="' . $atts['event'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $button_options .= ' subevent="' . get_post_meta($POST_ID, 'pretix_subevent', true) . '"';
     }
 
-    if ($atts['voucher']) {
+    if (isset($atts['voucher'])) {
         $button_options .= ' voucher="' . $atts['voucher'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
         $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
     }
 
-    if ($atts['voucher']) {
+    if (isset($atts['voucher'])) {
         $button_options .= ' voucher="' . $atts['voucher'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
         $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
     }
 
-    if ($atts['items']) {
+    if (isset($atts['items'])) {
         $button_options .= ' items="' . $atts['items'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_items', true)) {
         $button_options .= ' items="' . get_post_meta($POST_ID, 'pretix_items', true) . '"';
     }
 
-    if ($atts['iframe'] && $atts['iframe'] === 'disable') {
+    if (isset($atts['iframe']) && $atts['iframe'] === 'disable') {
         $button_options .= ' disable-iframe';
-    } elseif (get_post_meta($POST_ID, 'pretix_items', true) === 'disable') {
+    } elseif (get_post_meta($POST_ID, 'pretix_iframe', true) === 'disable') {
         $button_options .= ' disable-iframe';
     }
 
