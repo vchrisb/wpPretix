@@ -1,6 +1,6 @@
 # Pretix Shortcodes for Wordpress
 
-A Wordpress plugin to add shortcodes for Pretix using the [Embeddable Widget](https://docs.pretix.eu/en/latest/user/events/widget.html)
+A Wordpress plugin to add shortcodes for [Pretix](http://pretix.eu/) using the [Embeddable Widget](https://docs.pretix.eu/en/latest/user/events/widget.html)
 
 ## Installation
 

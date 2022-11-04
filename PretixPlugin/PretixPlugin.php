@@ -4,7 +4,7 @@ Plugin Name: Pretix Shortcode
 Description: Plugin to add a shortcode for Pretix
 Version: 0.2.1
 Author: Christopher Banck
-Author URI: https://banck.net
+Author URI: https://github.com/vchrisb/wpPretix
 */
 /* Start Adding Functions Below this Line */
 
