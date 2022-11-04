@@ -2,7 +2,7 @@
 /*
 Plugin Name: Pretix Shortcode
 Description: Plugin to add a shortcode for Pretix
-Version: 0.1.0
+Version: 0.2.0
 Author: Christopher Banck
 Author URI: https://banck.net
 */
@@ -25,7 +25,7 @@ $Pretix_options_defaults = array(
 
 function Pretix_shortcode_check($content)
 {
-    if (has_shortcode($content, 'pretix-button')) {
+    if (has_shortcode($content, 'pretix-button') || has_shortcode($content, 'pretix-widget')) {
         global $Pretix_options_defaults;
         $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
         wp_enqueue_style('pretix_style', $options['organization'] . $options['widget_style']);
@@ -38,7 +38,7 @@ add_filter('the_content', 'Pretix_shortcode_check');
 
 
 /**
- * This function is used to generate the widget code
+ * This function is used to generate the button code
  */
 
 function pretix_button($atts = [], $content = null, $tag = '')
@@ -84,15 +84,99 @@ function pretix_button($atts = [], $content = null, $tag = '')
 
     if (isset($atts['text'])) {
         $text = $atts['text'];
+    } elseif (get_post_meta($POST_ID, 'pretix_text', true)) {
+        $text = get_post_meta($POST_ID, 'pretix_text', true);
     } else {
         $text = "Tickets";
     }
+
     return '<pretix-button ' . $button_options . '>' . $text . '</pretix-button>';
+}
+
+/**
+ * This function is used to generate the widget code
+ */
+
+function pretix_widget($atts = [], $content = null, $tag = '')
+{
+    global $Pretix_options_defaults;
+    $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
+    $POST_ID = get_the_ID();
+
+    if (isset($atts['event'])) {
+        $event = $atts['event'];
+    } elseif (get_post_meta($POST_ID, 'pretix_event', true)) {
+        $event = get_post_meta($POST_ID, 'pretix_event', true);
+    } else {
+        return '';
+    }
+    $eventurl = $options['organization'] . '/' . $event;
+    $widget_options = 'event="' . $eventurl . '"';
+
+
+    if (isset($atts['voucher'])) {
+        $widget_options .= ' voucher="' . $atts['voucher'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
+        $widget_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
+    }
+
+    if (isset($atts['items'])) {
+        $widget_options .= ' items="' . $atts['items'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_items', true)) {
+        $widget_options .= ' items="' . get_post_meta($POST_ID, 'pretix_items', true) . '"';
+    }
+
+    if (isset($atts['iframe']) && $atts['iframe'] === 'disable') {
+        $widget_options .= ' disable-iframe';
+    } elseif (get_post_meta($POST_ID, 'pretix_iframe', true) === 'disable') {
+        $widget_options .= ' disable-iframe';
+    }
+
+    if (isset($atts['vouchers']) && $atts['vouchers'] === 'disable') {
+        $widget_options .= ' disable-vouchers';
+    } elseif (get_post_meta($POST_ID, 'pretix_vouchers', true) === 'disable') {
+        $widget_options .= ' disable-vouchers';
+    }
+
+    if (isset($atts['style'])) {
+        $widget_options .= ' style="' . $atts['style'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_style', true)) {
+        $widget_options .= ' style="' . get_post_meta($POST_ID, 'pretix_style', true) . '"';
+    }
+
+    if (isset($atts['categories'])) {
+        $widget_options .= ' categories="' . $atts['categories'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_categories', true)) {
+        $widget_options .= ' categories="' . get_post_meta($POST_ID, 'pretix_categories', true) . '"';
+    }
+
+    if (isset($atts['variations'])) {
+        $widget_options .= ' variations="' . $atts['variations'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_variations', true)) {
+        $widget_options .= ' variations="' . get_post_meta($POST_ID, 'pretix_variations', true) . '"';
+    }
+
+    if (isset($atts['filter'])) {
+        $widget_options .= ' filter="' . $atts['filter'] . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_filter', true)) {
+        $widget_options .= ' filter="' . get_post_meta($POST_ID, 'pretix_filter', true) . '"';
+    }
+
+    return '<pretix-widget ' . $widget_options . '></pretix-widget>
+    <noscript>
+        <div class="pretix-widget">
+            <div class="pretix-widget-info-message">
+                JavaScript is disabled in your browser. To access our ticket shop without JavaScript,
+                please <a target="_blank" href="' . $eventurl . '">click here</a>.
+            </div>
+        </div>
+    </noscript>';
 }
 
 function Pretix_register_shortcodes()
 {
     add_shortcode('pretix-button', 'pretix_button');
+    add_shortcode('pretix-widget', 'pretix_widget');
 }
 
 add_action('init', 'Pretix_register_shortcodes');
