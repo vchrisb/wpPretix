@@ -2,7 +2,7 @@
 /*
 Plugin Name: Pretix Shortcode
 Description: Plugin to add a shortcode for a Pretix Button
-Version: 0.0.1
+Version: 0.0.2
 Author: Christopher Banck
 Author URI: https://banck.net
 */
@@ -25,8 +25,8 @@ $Pretix_options_defaults = array(
 
 function Pretix_shortcode_check($content)
 {
-    if (has_shortcode($content, 'pretix')) {
-		global $Pretix_options_defaults;
+    if (has_shortcode($content, 'pretix-button')) {
+        global $Pretix_options_defaults;
         $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
         wp_enqueue_style('pretix_style', $options['organization'] . $options['widget_style']);
         wp_enqueue_script('pretix_script', $options['organization'] . $options['widget_script']);
@@ -36,6 +36,41 @@ function Pretix_shortcode_check($content)
 }
 add_filter('the_content', 'Pretix_shortcode_check');
 
+
+/**
+ * This function is used to generate the widget code
+ */
+
+function pretix_button($atts = [], $content = null, $tag = '')
+{
+    global $Pretix_options_defaults;
+    $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
+
+    if (isset($atts['event'])) {
+        $event = $atts['event'];
+    } elseif (get_post_meta(get_the_ID(), 'pretix_event', true)) {
+        $event = get_post_meta(get_the_ID(), 'pretix_event', true);
+    } else {
+        return '';
+    }
+
+    if (isset($atts['text'])) {
+        $text = $atts['text'];
+    } else {
+        $text = "Tickets";
+    }
+    $eventurl = $options['organization'] . '/' . $event;
+    $button_options = 'event="' . $eventurl . '"';
+
+    return '<pretix-button ' . $button_options . '>' . $text . '</pretix-button>';
+}
+
+function Pretix_register_shortcodes()
+{
+    add_shortcode('pretix-button', 'pretix_button');
+}
+
+add_action('init', 'Pretix_register_shortcodes');
 
 class PretixAdmin
 {
@@ -60,7 +95,7 @@ class PretixAdmin
 
     public function Pretix_create_admin_page()
     {
-		global $Pretix_options_defaults;
+        global $Pretix_options_defaults;
         $this->Pretix_options = get_option('Pretix_options', $Pretix_options_defaults); ?>
 
 		<div class="wrap">
