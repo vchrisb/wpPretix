@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Pretix Shortcode
-Description: Plugin to add a shortcode for Pretix Button
+Description: Plugin to add a shortcode for a Pretix Button
 Version: 0.0.1
 Author: Christopher Banck
 Author URI: https://banck.net
@@ -12,7 +12,7 @@ Author URI: https://banck.net
 $Pretix_options_defaults = array(
     'organization' => 'https://pretix.eu/demo',
     'widget_script' => '/widget/v1.de.js',
-    'widget_style' => '/widget/v1.css"',
+    'widget_style' => '/widget/v1.css',
   );
 
 /**
@@ -26,6 +26,7 @@ $Pretix_options_defaults = array(
 function Pretix_shortcode_check($content)
 {
     if (has_shortcode($content, 'pretix')) {
+		global $Pretix_options_defaults;
         $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
         wp_enqueue_style('pretix_style', $options['organization'] . $options['widget_style']);
         wp_enqueue_script('pretix_script', $options['organization'] . $options['widget_script']);
@@ -36,7 +37,7 @@ function Pretix_shortcode_check($content)
 add_filter('the_content', 'Pretix_shortcode_check');
 
 
-class Pretix
+class PretixAdmin
 {
     private $Pretix_options;
 
@@ -49,16 +50,17 @@ class Pretix
     public function Pretix_add_plugin_page()
     {
         add_options_page(
-            'Local Fonts', // page_title
-            'Local Fonts', // menu_title
+            'Pretix', // page_title
+            'Pretix', // menu_title
             'manage_options', // capability
-            'local-fonts', // menu_slug
+            'pretix', // menu_slug
             array( $this, 'Pretix_create_admin_page' ) // function
         );
     }
 
     public function Pretix_create_admin_page()
     {
+		global $Pretix_options_defaults;
         $this->Pretix_options = get_option('Pretix_options', $Pretix_options_defaults); ?>
 
 		<div class="wrap">
@@ -161,7 +163,7 @@ class Pretix
     }
 }
 if (is_admin()) {
-    $pretix = new Pretix();
+    $pretix = new PretixAdmin();
 }
 
 ?>
