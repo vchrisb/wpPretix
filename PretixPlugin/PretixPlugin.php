@@ -2,7 +2,7 @@
 /*
 Plugin Name: Pretix Shortcode
 Description: Plugin to add a shortcode for Pretix
-Version: 0.2.1
+Version: 0.2.2
 Author: Christopher Banck
 Author URI: https://github.com/vchrisb/wpPretix
 */
@@ -15,26 +15,16 @@ $Pretix_options_defaults = array(
     'widget_style' => '/widget/v1.css',
   );
 
-/**
- * This function is used to check the_content to see if it contains any pretix shortcode and adds widget code
- *
- * @param $content
- *
- * @return string
- */
-
-function Pretix_shortcode_check($content)
+function Pretix_register()
 {
-    if (has_shortcode($content, 'pretix-button') || has_shortcode($content, 'pretix-widget')) {
-        global $Pretix_options_defaults;
-        $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
-        wp_enqueue_style('pretix_style', $options['organization'] . $options['widget_style']);
-        wp_enqueue_script('pretix_script', $options['organization'] . $options['widget_script']);
-    }
-
-    return $content; // Make sure you still return your content or else nothing will display.
+    global $Pretix_options_defaults;
+    $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
+    wp_register_style('pretix_style', $options['organization'] . $options['widget_style']);
+    wp_register_script('pretix_script', $options['organization'] . $options['widget_script']);
+    wp_enqueue_style('pretix_style');
+    wp_enqueue_script('pretix_script');
 }
-add_filter('the_content', 'Pretix_shortcode_check');
+add_action('wp_head', 'Pretix_register');
 
 
 /**
@@ -62,6 +52,11 @@ function pretix_button($atts = [], $content = null, $tag = '')
         $button_options .= ' subevent="' . $atts['subevent'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $button_options .= ' subevent="' . get_post_meta($POST_ID, 'pretix_subevent', true) . '"';
+    } elseif (get_post_meta($POST_ID, 'pretix_subevents', true)) {
+        $subevents = json_decode(get_post_meta($POST_ID, 'pretix_subevents', true));
+        if (! is_null($subevents) && isset($subevents->$POST_ID)) {
+            $button_options .= ' subevent="' . $subevents->$POST_ID . '"';
+        }
     }
 
     if (isset($atts['voucher'])) {
@@ -117,6 +112,11 @@ function pretix_widget($atts = [], $content = null, $tag = '')
         $eventurl .= '/' . $atts['subevent'];
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $eventurl .= '/' . get_post_meta($POST_ID, 'pretix_subevent', true);
+    } elseif (get_post_meta($POST_ID, 'pretix_subevents', true)) {
+        $subevents = json_decode(get_post_meta($POST_ID, 'pretix_subevents', true));
+        if (! is_null($subevents) && isset($subevents->$POST_ID)) {
+            $eventurl .= '/' . $subevents->$POST_ID;
+        }
     }
 
     $widget_options = 'event="' . $eventurl . '"';

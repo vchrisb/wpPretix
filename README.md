@@ -52,6 +52,7 @@ The following custom fields can be set:
 
 * `pretix_event`: The event
 * `pretix_subevent`: A subevent to be pre-selected
+* `pretix_subevents`: A Json object with pairs of `postID`:`subevent` to specify subevent in a recurring event `{"10000568":3740637,"10000569":3747303}`
 * `pretix_voucher`: A voucher code to be pre-selected
 * `pretix_items`: A collection of items to be put in the cart
 * `pretix_iframe`: if set to `disable` the shop will alway be opened in new window
@@ -97,6 +98,7 @@ The following custom fields can be set:
 
 * `pretix_event`: The event, if empty string all events will be shown.
 * `pretix_subevent`: A subevent to be pre-selected
+* `pretix_subevents`: A Json object with pairs of `"postID":subevent` to specify subevent in a recurring event e.g. `{"10000568":3740637,"10000569":3747303}`
 * `pretix_voucher`: A voucher code to be pre-selected
 * `pretix_vouchers`: if set to `disable` the voucher input is disabled
 * `pretix_iframe`: if set to `disable` the shop will alway be opened in new window
