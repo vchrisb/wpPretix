@@ -1,10 +1,15 @@
 <?php
 /*
 Plugin Name: Pretix Shortcode
+Plugin URI: https://github.com/vchrisb/wpPretix
 Description: Plugin to add a shortcode for Pretix
-Version: 0.2.2
+Version: 0.2.3
 Author: Christopher Banck
-Author URI: https://github.com/vchrisb/wpPretix
+Author URI: https://banck.net
+Requires PHP: 7.4
+Requires at least: 5.8
+License: MIT License
+License URI: https://github.com/vchrisb/wpPretix/blob/main/LICENSE
 */
 /* Start Adding Functions Below this Line */
 
