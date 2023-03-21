@@ -36,7 +36,7 @@ Optionally the following attributes can be configured:
 * `subevent`: A subevent to be pre-selected
 * `voucher`: A voucher code to be pre-selected
 * `items`: A collection of items to be put in the cart
-* `iframe`: if set to `disable` the shop will alway be opened in new window
+* `iframe`: if set to `disable` the shop will always be opened in new window
 * `text`: Button Text
 
 ### Usage with custom fields
@@ -52,13 +52,20 @@ The following custom fields can be set:
 
 * `pretix_event`: The event
 * `pretix_subevent`: A subevent to be pre-selected
-* `pretix_subevents`: A Json object with pairs of `postID`:`subevent` to specify subevent in a recurring event `{"10000568":3740637,"10000569":3747303}`
 * `pretix_voucher`: A voucher code to be pre-selected
 * `pretix_items`: A collection of items to be put in the cart
-* `pretix_iframe`: if set to `disable` the shop will alway be opened in new window
+* `pretix_iframe`: if set to `disable` the shop will always be opened in new window
 * `pretix_text`: Button Text
 
 At least `pretix_event` needs to be set in the post/event. Shortcode attributes do have precedence.
+
+### Usage with additional fields (The Events Calendar Pro)
+
+[The Events Calendar Pro](https://theeventscalendar.com/products/wordpress-events-calendar/) does not support custom fields with recurring events.
+Therefore "additional fields", a pro feature, needs to be used.
+The same fields as with custom fields can be set with the addition of the following:
+
+* `pretix_subevents`: A Json object with pairs of `eventID`:`subevent` to specify subevent in a recurring event `{"10000568":3740637,"10000569":3747303}`
 
 ## Widget
 
@@ -78,7 +85,7 @@ Optionally the following attributes can be configured:
 * `subevent`: A subevent to be pre-selected
 * `voucher`: A voucher code to be pre-selected
 * `vouchers`: if set to `disable` the voucher input is disabled
-* `iframe`: if set to `disable` the shop will alway be opened in new window
+* `iframe`: if set to `disable` the shop will always be opened in new window
 * `style`: Show series as `list`, `calendar` or `week`
 * `items`: Filter by a list of product IDs
 * `categories`: Filter by one or more categories
@@ -98,10 +105,9 @@ The following custom fields can be set:
 
 * `pretix_event`: The event, if empty string all events will be shown.
 * `pretix_subevent`: A subevent to be pre-selected
-* `pretix_subevents`: A Json object with pairs of `"postID":subevent` to specify subevent in a recurring event e.g. `{"10000568":3740637,"10000569":3747303}`
 * `pretix_voucher`: A voucher code to be pre-selected
 * `pretix_vouchers`: if set to `disable` the voucher input is disabled
-* `pretix_iframe`: if set to `disable` the shop will alway be opened in new window
+* `pretix_iframe`: if set to `disable` the shop will always be opened in new window
 * `pretix_style`: Show series as `list`, `calendar` or `week`
 * `pretix_items`: Filter by a list of product IDs
 * `pretix_categories`: Filter by one or more categories
@@ -109,3 +115,11 @@ The following custom fields can be set:
 * `pretix_filter`: Filter by meta data attributes
 
 At least `pretix_event` needs to be set in the post/event. Shortcode attributes do have precedence.
+
+### Usage with additional fields (The Events Calendar Pro)
+
+[The Events Calendar Pro](https://theeventscalendar.com/products/wordpress-events-calendar/) does not support custom fields with recurring events.
+Therefore "additional fields", a pro feature, needs to be used.
+The same fields as with custom fields can be set with the addition of the following:
+
+* `pretix_subevents`: A Json object with pairs of `eventID`:`subevent` to specify subevent in a recurring event `{"10000568":3740637,"10000569":3747303}`

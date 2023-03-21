@@ -3,7 +3,7 @@
 Plugin Name: Pretix Shortcode
 Plugin URI: https://github.com/vchrisb/wpPretix
 Description: Plugin to add a shortcode for Pretix
-Version: 0.2.3
+Version: 0.2.4
 Author: Christopher Banck
 Author URI: https://banck.net
 Requires PHP: 7.4
@@ -41,11 +41,18 @@ function pretix_button($atts = [], $content = null, $tag = '')
     global $Pretix_options_defaults;
     $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
     $POST_ID = get_the_ID();
+    $tribe_fields = [];
+
+    if (function_exists('tribe_get_custom_fields')) {
+        $tribe_fields = tribe_get_custom_fields($POST_ID);
+    }
 
     if (isset($atts['event'])) {
         $event = $atts['event'];
     } elseif (get_post_meta($POST_ID, 'pretix_event', true)) {
         $event = get_post_meta($POST_ID, 'pretix_event', true);
+    } elseif (! empty($tribe_fields['pretix_event'])) {
+        $event = $tribe_fields['pretix_event'];
     } else {
         return '';
     }
@@ -57,8 +64,10 @@ function pretix_button($atts = [], $content = null, $tag = '')
         $button_options .= ' subevent="' . $atts['subevent'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $button_options .= ' subevent="' . get_post_meta($POST_ID, 'pretix_subevent', true) . '"';
-    } elseif (get_post_meta($POST_ID, 'pretix_subevents', true)) {
-        $subevents = json_decode(get_post_meta($POST_ID, 'pretix_subevents', true));
+    } elseif (! empty($tribe_fields['pretix_subevent'])) {
+        $button_options .= ' subevent="' . $tribe_fields['pretix_subevent'] . '"';
+    } elseif (! empty($tribe_fields['pretix_subevents'])) {
+        $subevents = json_decode($tribe_fields['pretix_subevents']);
         if (! is_null($subevents) && isset($subevents->$POST_ID)) {
             $button_options .= ' subevent="' . $subevents->$POST_ID . '"';
         }
@@ -68,17 +77,23 @@ function pretix_button($atts = [], $content = null, $tag = '')
         $button_options .= ' voucher="' . $atts['voucher'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
         $button_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_voucher'])) {
+        $button_options .= ' voucher="' . $tribe_fields['pretix_voucher'] . '"';
     }
 
     if (isset($atts['items'])) {
         $button_options .= ' items="' . $atts['items'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_items', true)) {
         $button_options .= ' items="' . get_post_meta($POST_ID, 'pretix_items', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_items'])) {
+        $button_options .= ' items="' . $tribe_fields['pretix_items'] . '"';
     }
 
     if (isset($atts['iframe']) && $atts['iframe'] === 'disable') {
         $button_options .= ' disable-iframe';
     } elseif (get_post_meta($POST_ID, 'pretix_iframe', true) === 'disable') {
+        $button_options .= ' disable-iframe';
+    } elseif ($tribe_fields['pretix_iframe'] === 'disable') {
         $button_options .= ' disable-iframe';
     }
 
@@ -86,6 +101,8 @@ function pretix_button($atts = [], $content = null, $tag = '')
         $text = $atts['text'];
     } elseif (get_post_meta($POST_ID, 'pretix_text', true)) {
         $text = get_post_meta($POST_ID, 'pretix_text', true);
+    } elseif (! empty($tribe_fields['pretix_text'])) {
+        $text = $tribe_fields['pretix_text'];
     } else {
         $text = "Tickets";
     }
@@ -102,11 +119,18 @@ function pretix_widget($atts = [], $content = null, $tag = '')
     global $Pretix_options_defaults;
     $options = wp_parse_args(get_option('Pretix_options'), $Pretix_options_defaults);
     $POST_ID = get_the_ID();
+    $tribe_fields = [];
+
+    if (function_exists('tribe_get_custom_fields')) {
+        $tribe_fields = tribe_get_custom_fields($POST_ID);
+    }
 
     if (isset($atts['event'])) {
         $event = $atts['event'];
     } elseif (get_post_meta($POST_ID, 'pretix_event', true)) {
         $event = get_post_meta($POST_ID, 'pretix_event', true);
+    } elseif (! empty($tribe_fields['pretix_event'])) {
+        $event = $tribe_fields['pretix_event'];
     } else {
         return '';
     }
@@ -117,8 +141,8 @@ function pretix_widget($atts = [], $content = null, $tag = '')
         $eventurl .= '/' . $atts['subevent'];
     } elseif (get_post_meta($POST_ID, 'pretix_subevent', true)) {
         $eventurl .= '/' . get_post_meta($POST_ID, 'pretix_subevent', true);
-    } elseif (get_post_meta($POST_ID, 'pretix_subevents', true)) {
-        $subevents = json_decode(get_post_meta($POST_ID, 'pretix_subevents', true));
+    } elseif (! empty($tribe_fields['pretix_subevents'])) {
+        $subevents = json_decode($tribe_fields['pretix_subevents']);
         if (! is_null($subevents) && isset($subevents->$POST_ID)) {
             $eventurl .= '/' . $subevents->$POST_ID;
         }
@@ -130,17 +154,23 @@ function pretix_widget($atts = [], $content = null, $tag = '')
         $widget_options .= ' voucher="' . $atts['voucher'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_voucher', true)) {
         $widget_options .= ' voucher="' . get_post_meta($POST_ID, 'pretix_voucher', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_voucher'])) {
+        $widget_options .= ' voucher="' . $tribe_fields['pretix_voucher'] . '"';
     }
 
     if (isset($atts['items'])) {
         $widget_options .= ' items="' . $atts['items'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_items', true)) {
         $widget_options .= ' items="' . get_post_meta($POST_ID, 'pretix_items', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_items'])) {
+        $widget_options .= ' items="' . $tribe_fields['pretix_items'] . '"';
     }
 
     if (isset($atts['iframe']) && $atts['iframe'] === 'disable') {
         $widget_options .= ' disable-iframe';
     } elseif (get_post_meta($POST_ID, 'pretix_iframe', true) === 'disable') {
+        $widget_options .= ' disable-iframe';
+    } elseif ($tribe_fields['pretix_iframe'] === 'disable') {
         $widget_options .= ' disable-iframe';
     }
 
@@ -148,30 +178,40 @@ function pretix_widget($atts = [], $content = null, $tag = '')
         $widget_options .= ' disable-vouchers';
     } elseif (get_post_meta($POST_ID, 'pretix_vouchers', true) === 'disable') {
         $widget_options .= ' disable-vouchers';
+    } elseif ($tribe_fields['pretix_vouchers'] === 'disable') {
+        $widget_options .= ' disable-vouchers';
     }
 
     if (isset($atts['style'])) {
         $widget_options .= ' style="' . $atts['style'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_style', true)) {
         $widget_options .= ' style="' . get_post_meta($POST_ID, 'pretix_style', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_style'])) {
+        $widget_options .= ' style="' . $tribe_fields['pretix_style'] . '"';
     }
 
     if (isset($atts['categories'])) {
         $widget_options .= ' categories="' . $atts['categories'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_categories', true)) {
         $widget_options .= ' categories="' . get_post_meta($POST_ID, 'pretix_categories', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_categories'])) {
+        $widget_options .= ' categories="' . $tribe_fields['pretix_categories'] . '"';
     }
 
     if (isset($atts['variations'])) {
         $widget_options .= ' variations="' . $atts['variations'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_variations', true)) {
         $widget_options .= ' variations="' . get_post_meta($POST_ID, 'pretix_variations', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_variations'])) {
+        $widget_options .= ' variations="' . $tribe_fields['pretix_variations'] . '"';
     }
 
     if (isset($atts['filter'])) {
         $widget_options .= ' filter="' . $atts['filter'] . '"';
     } elseif (get_post_meta($POST_ID, 'pretix_filter', true)) {
         $widget_options .= ' filter="' . get_post_meta($POST_ID, 'pretix_filter', true) . '"';
+    } elseif (! empty($tribe_fields['pretix_filter'])) {
+        $widget_options .= ' filter="' . $tribe_fields['pretix_filter'] . '"';
     }
 
     return '<pretix-widget ' . $widget_options . '></pretix-widget>
